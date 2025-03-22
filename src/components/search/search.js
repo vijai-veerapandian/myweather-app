@@ -6,7 +6,7 @@ const Search = ({ onSearchChange }) => {
     const [search, setSearch] = useState(null);
 
     const loadOptions = (inputValue) => {
-        return fetch(GEO_API_URL, geoApiOptions) // Use geoApiOptions instead of options
+        return fetch(`${GEO_API_URL}/cities?miniPopulation=1000000&namePrefix=${inputValue}`, geoApiOptions)
             .then(response => response.json())
             .then(response => console.log(response))
             .catch(error => console.log(error));
