@@ -8,6 +8,10 @@ MyWeather App is a simple weather application built with React. It allows users 
 - View a 7-day weather forecast
 - Responsive design
 
+## Screenshot
+
+![MyWeather App Screenshot](./assets/screenshot.png)
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
@@ -25,6 +29,8 @@ You need to have Node.js and npm installed on your machine.
 
 ```bash
 git clone https://github.com/yourusername/myweather-app.git
+
+cd myweather-app
 ```
 
 2. Navigate to the project directory:
@@ -90,7 +96,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 - Hat tip to anyone whose code was used
 - Inspiration
 - etc
-```
 
 ### Summary:
 1. **Project Title and Description**:
