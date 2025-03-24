@@ -2,6 +2,10 @@ import React from 'react';
 import './current-weather.css';
 
 const CurrentWeather = ({ data }) => {
+    const currentDate = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = currentDate.toLocaleDateString(undefined, options);
+
     console.log('Current Weather', data);
     return (
         <div className="weather">
@@ -38,6 +42,9 @@ const CurrentWeather = ({ data }) => {
                         <span className="parameter-value">{data.main.pressure} hPa</span>
                     </div>
                 </div>
+            </div>
+            <div className="date">
+                <p>{formattedDate}</p>
             </div>
         </div>
     );

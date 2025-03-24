@@ -1,11 +1,12 @@
 .weather {
     width: 350px;
+    height: auto; /* Adjust height to be auto */
     border-radius: 6px;
     box-shadow: 10px -2px 20px 2px rgb(0 0 0 / 30%);
     color: #fff;
     background-color: #333;
-    margin: 20px auto 0 auto;
-    padding: 20px;
+    margin: 20px auto;
+    padding: 15px 20px; /* Adjust padding to make it shorter */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -40,8 +41,8 @@
 }
 
 .weather-icon {
-    width: 100px;
-    height: 100px;
+    width: 80px; /* Adjust icon size */
+    height: 80px; /* Adjust icon size */
     align-self: flex-end;
 }
 
@@ -70,4 +71,11 @@
     font-weight: 600;
     font-size: 14px;
     text-align: right;
+}
+
+.date {
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: left;
+    width: 100%;
 }
