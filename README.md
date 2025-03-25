@@ -1,140 +1,101 @@
-# MyWeather App
-
-MyWeather App is a simple weather application built with React. It allows users to search for a city and view the current weather and a 7-day forecast.
-
-## Features
-
-- Search for a city to get current weather information
-- View a 7-day weather forecast
-- Responsive design
-
 ## Screenshot
 
 ![MyWeather App Screenshot](./assets/screenshot.png)
 
-## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+### Updated README.md
 
-### Prerequisites
+```markdown
+# MyWeather App
 
-You need to have Node.js and npm installed on your machine.
+MyWeather App is a containerized application that uses Redis, PostgreSQL, and a React frontend. This README provides instructions on how to set up and run the application using Docker Compose.
 
-- [Node.js](https://nodejs.org/)
-- [npm](https://www.npmjs.com/)
+## Prerequisites
 
-### Installing
+- Docker
+- Docker Compose
 
-1. Clone the repository:
+## Environment Variables
 
-```bash
-git clone https://github.com/yourusername/myweather-app.git
+Create a `.env` file in the root of your project to store your environment variables:
 
-cd myweather-app
+```plaintext
+REACT_APP_GEO_API_URL=https://wft-geo-db.p.rapidapi.com/v1/geo
+REACT_APP_RAPIDAPI_KEY=<your key>
+REACT_APP_RAPIDAPI_HOST=wft-geo-db.p.rapidapi.com
+POSTGRES_DB=weatherdb
+POSTGRES_USER=weatheruser
+POSTGRES_PASSWORD=weatherpass
+REDIS_HOST=redis
+REDIS_PORT=6379
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+WEATHER_API_URL=https://api.openweathermap.org/data/2.5
+WEATHER_API_KEY=<your key>
 ```
 
-2. Navigate to the project directory:
+## Docker Compose
+
+### Starting the Application
+
+To start the application, run the following command:
 
 ```bash
-cd myweather-app
+docker-compose up --build
 ```
 
-3. Install the dependencies:
+This command will build and start all the services defined in the `docker-compose.yml` file, including the React frontend, Redis, PostgreSQL, and the backend server.
+
+### Stopping the Application
+
+To stop the application, run the following command:
 
 ```bash
-npm install
+docker-compose down
 ```
 
-### Running the App
+This command will stop and remove all the containers defined in the `docker-compose.yml` file.
 
-To start the development server, run:
+## Services
 
-```bash
-npm start
+### React Frontend
+
+The React frontend is served on port 3000. It uses environment variables to configure the API URLs and headers.
+
+### Redis
+
+Redis is used for caching and is accessible on port 6379.
+
+### PostgreSQL
+
+PostgreSQL is used as the database and is accessible on port 5432. The database credentials are configured using environment variables.
+
+### Backend Server
+
+The backend server is served on port 5001. It uses environment variables to configure the Redis and PostgreSQL connections, as well as the OpenWeatherMap API.
+
+## Logging
+
+The application uses Docker's `json-file` logging driver to store logs. The logs are configured to rotate when they reach 10MB in size, and up to 3 log files are retained.
+
+## Additional Information
+
+Ensure that the `.env` file is not committed to version control by adding it to your `.gitignore` file:
+
+```plaintext
+# .gitignore
+.env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser. The page will reload when you make changes. You may also see any lint errors in the console.
-
-### Running Tests
-
-To launch the test runner in the interactive watch mode, run:
-
-```bash
-npm test
+This will help keep your sensitive information secure.
 ```
-
-### Building the App
-
-To build the app for production to the `build` folder, run:
-
-```bash
-npm run build
-```
-
-It correctly bundles React in production mode and optimizes the build for the best performance. The build is minified and the filenames include the hashes. Your app is ready to be deployed!
-
-### Deployment
-
-For more information on how to deploy the app, see the [Create React App documentation](https://facebook.github.io/create-react-app/docs/deployment).
-
-## Built With
-
-- [React](https://reactjs.org/) - The web framework used
-- [OpenWeatherMap API](https://openweathermap.org/api) - Weather data provider
-- [GeoDB Cities API](https://rapidapi.com/wirefreethought/api/geodb-cities) - City data provider
-
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
-## Acknowledgments
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- etc
 
 ### Summary:
-1. **Project Title and Description**:
-    - Provide a clear title and a brief description of the project.
+1. **Environment Variables**: Create a .env file to store environment variables.
+2. **Docker Compose Commands**: Include commands to start and stop the application using Docker Compose.
+3. **Services**: Describe the services (React frontend, Redis, PostgreSQL, backend server) and their configurations.
+4. **Logging**: Explain the logging configuration.
+5. **Additional Information**: Ensure the .env file is not committed to version control.
 
-2. **Features**:
-    - List the main features of the application.
+These updates to the README.md file will provide clear instructions on how to set up and run the application, as well as how to manage environment variables and logging.
 
-3. **Getting Started**:
-    - Include instructions on how to set up the project locally.
-
-4. **Prerequisites**:
-    - List the prerequisites needed to run the project.
-
-5. **Installing**:
-    - Provide step-by-step instructions on how to install the project dependencies.
-
-6. **Running the App**:
-    - Explain how to start the development server.
-
-7. **Running Tests**:
-    - Explain how to run the tests.
-
-8. **Building the App**:
-    - Explain how to build the app for production.
-
-9. **Deployment**:
-    - Provide a link to the deployment documentation.
-
-10. **Built With**:
-    - List the main technologies used in the project.
-
-11. **Contributing**:
-    - Provide a link to the contributing guidelines.
-
-12. **License**:
-    - Include the license information.
-
-13. **Acknowledgments**:
-    - Acknowledge any resources or inspirations for the project.
-
-This template should provide a comprehensive overview of your project and help others understand how to set it up and contribute to it.
