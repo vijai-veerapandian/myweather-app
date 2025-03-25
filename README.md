@@ -41,10 +41,10 @@ WEATHER_API_KEY=<your key>
 To start the application, run the following command:
 
 ```bash
-docker-compose up --build
+docker-compose up
 ```
 
-This command will build and start all the services defined in the `docker-compose.yml` file, including the React frontend, Redis, PostgreSQL, and the backend server.
+This command will start all the services defined in the `docker-compose.yml` file, including the React frontend, Redis, PostgreSQL, and the backend server.
 
 ### Stopping the Application
 
