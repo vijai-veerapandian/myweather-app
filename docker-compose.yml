@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   react-app:
-    image: myweatherapp-frontend:v1.1
+    image: ghcr.io/vijai-veerapandian/myweather-app/frontend:v1.1
     ports:
       - "3000:3000"
     depends_on:
@@ -45,7 +45,7 @@ services:
         max-file: "3"
 
   backend:
-    image: myweatherapp-backend-debug:v1.0
+    image: ghcr.io/vijai-veerapandian/myweather-app/backend-debug:v1.0
     ports:
       - "5001:5001"
     depends_on:
