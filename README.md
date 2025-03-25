@@ -13,19 +13,13 @@ MyWeather App is a containerized application that uses Redis, PostgreSQL, and a 
 
 ## Environment Variables
 
-update/create the `.env` file in the root of your project to store your environment variables:
+update the `.env` file in the root of your project to store your environment variables:
 
 ```plaintext
 REACT_APP_GEO_API_URL=https://wft-geo-db.p.rapidapi.com/v1/geo
 REACT_APP_RAPIDAPI_KEY=<your key>
 REACT_APP_RAPIDAPI_HOST=wft-geo-db.p.rapidapi.com
-POSTGRES_DB=weatherdb
-POSTGRES_USER=weatheruser
-POSTGRES_PASSWORD=weatherpass
-REDIS_HOST=redis
-REDIS_PORT=6379
-POSTGRES_HOST=postgres
-POSTGRES_PORT=5432
+
 WEATHER_API_URL=https://api.openweathermap.org/data/2.5
 WEATHER_API_KEY=<your key>
 ```
