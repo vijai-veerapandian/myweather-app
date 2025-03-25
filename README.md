@@ -5,7 +5,6 @@
 
 ### Updated README.md
 
-```markdown
 # MyWeather App
 
 MyWeather App is a containerized application that uses Redis, PostgreSQL, and a React frontend. This README provides instructions on how to set up and run the application using Docker Compose.
