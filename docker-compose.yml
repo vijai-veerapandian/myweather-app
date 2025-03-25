@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  react-app:
+    image: myweather-frontend:v1.0
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+      - postgres
+      - backend
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:5001
+      - REACT_APP_GEO_API_URL=${REACT_APP_GEO_API_URL}
+      - REACT_APP_RAPIDAPI_KEY=${REACT_APP_RAPIDAPI_KEY}
+      - REACT_APP_RAPIDAPI_HOST=${REACT_APP_RAPIDAPI_HOST}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    image: redis:6.2.6
+    ports:
+      - "6379:6379"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  postgres:
+    image: postgres:13.4
+    environment:
+      POSTGRES_DB: weatherdb
+      POSTGRES_USER: weatheruser
+      POSTGRES_PASSWORD: weatherpass
+    ports:
+      - "5432:5432"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    image: myweather-backend:v1.0
+    ports:
+      - "5001:5001"
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=weatherdb
+      - POSTGRES_USER=weatheruser
+      - POSTGRES_PASSWORD=weatherpass
+      - WEATHER_API_URL=${WEATHER_API_URL}
+      - WEATHER_API_KEY=${WEATHER_API_KEY}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
