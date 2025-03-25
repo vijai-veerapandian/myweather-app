@@ -71,13 +71,6 @@ The application uses Docker's `json-file` logging driver to store logs. The logs
 
 ## Additional Information
 
-Ensure that the `.env` file is not committed to version control by adding it to your `.gitignore` file:
-
-```plaintext
-# .gitignore
-.env
-```
-
 This will help keep your sensitive information secure.
 ```
 
