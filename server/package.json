@@ -7,9 +7,9 @@
     },
     "dependencies": {
       "express": "^4.17.1",
-      "node-fetch": "^2.6.1",
       "pg": "^8.6.0",
       "redis": "^3.1.2",
-      "cors": "^2.8.5"
+      "cors": "^2.8.5",
+      "axios": "^0.21.1" 
     }
   }

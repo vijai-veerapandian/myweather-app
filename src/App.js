@@ -22,7 +22,9 @@ function App() {
         setCurrentWeather({ city: searchData.label, ...weatherResponse });
         setForecast({ city: searchData.label, ...forecastResponse });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.error('Error fetching weather data:', err);
+      });
   }
 
   console.log(currentWeather);

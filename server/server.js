@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const redis = require('redis');
 const { Pool } = require('pg');
-const fetch = require('node-fetch');
+const axios = require('axios');
 
 const app = express();
 const port = 5001;
@@ -25,20 +25,53 @@ const pool = new Pool({
   port: process.env.POSTGRES_PORT,
 });
 
+// Pre-fetch data and store in Redis
+const prefetchData = async () => {
+  try {
+    const lat = '45.424722222';
+    const lon = '-75.695';
+    const weatherResponse = await axios.get(`${process.env.WEATHER_API_URL}/weather`, {
+      params: {
+        lat,
+        lon,
+        units: 'metric',
+        appid: process.env.WEATHER_API_KEY,
+      },
+    });
+    const weatherData = weatherResponse.data;
+    redisClient.setex(`${lat},${lon}`, 3600, JSON.stringify(weatherData));
+    console.log('Pre-fetched weather data and stored in Redis');
+  } catch (error) {
+    console.error('Error pre-fetching weather data:', error.response ? error.response.data : error.message);
+  }
+};
+
+prefetchData();
+
 app.get('/weather', async (req, res) => {
   const { lat, lon } = req.query;
 
   // Check Redis cache
   redisClient.get(`${lat},${lon}`, async (err, data) => {
-    if (err) throw err;
+    if (err) {
+      console.error('Error accessing Redis:', err);
+      return res.status(500).send('Error accessing Redis');
+    }
 
     if (data) {
       res.send(JSON.parse(data));
     } else {
       try {
         // Fetch data from OpenWeatherMap API
-        const weatherResponse = await fetch(`${process.env.WEATHER_API_URL}/weather?lat=${lat}&lon=${lon}&units=metric&appid=${process.env.WEATHER_API_KEY}`);
-        const weatherData = await weatherResponse.json();
+        const weatherResponse = await axios.get(`${process.env.WEATHER_API_URL}/weather`, {
+          params: {
+            lat,
+            lon,
+            units: 'metric',
+            appid: process.env.WEATHER_API_KEY,
+          },
+        });
+        const weatherData = weatherResponse.data;
 
         // Save response in Redis cache
         redisClient.setex(`${lat},${lon}`, 3600, JSON.stringify(weatherData));
@@ -48,7 +81,7 @@ app.get('/weather', async (req, res) => {
 
         res.send(weatherData);
       } catch (error) {
-        console.error('Error fetching weather data:', error);
+        console.error('Error fetching weather data:', error.response ? error.response.data : error.message);
         res.status(500).send('Error fetching weather data');
       }
     }
@@ -60,12 +93,19 @@ app.get('/forecast', async (req, res) => {
 
   try {
     // Fetch data from OpenWeatherMap API
-    const forecastResponse = await fetch(`${process.env.WEATHER_API_URL}/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${process.env.WEATHER_API_KEY}`);
-    const forecastData = await forecastResponse.json();
+    const forecastResponse = await axios.get(`${process.env.WEATHER_API_URL}/forecast`, {
+      params: {
+        lat,
+        lon,
+        units: 'metric',
+        appid: process.env.WEATHER_API_KEY,
+      },
+    });
+    const forecastData = forecastResponse.data;
 
     res.send(forecastData);
   } catch (error) {
-    console.error('Error fetching forecast data:', error);
+    console.error('Error fetching forecast data:', error.response ? error.response.data : error.message);
     res.status(500).send('Error fetching forecast data');
   }
 });
