@@ -2,11 +2,7 @@
 
 ![MyWeather App Screenshot](./assets/screenshot.png)
 
-
-### Updated README.md
-
-```markdown
-# MyWeather App
+## MyWeather App
 
 MyWeather App is a containerized application that uses Redis, PostgreSQL, and a React frontend. This README provides instructions on how to set up and run the application using Docker Compose.
 
@@ -17,7 +13,7 @@ MyWeather App is a containerized application that uses Redis, PostgreSQL, and a 
 
 ## Environment Variables
 
-Create a `.env` file in the root of your project to store your environment variables:
+update/create the `.env` file in the root of your project to store your environment variables:
 
 ```plaintext
 REACT_APP_GEO_API_URL=https://wft-geo-db.p.rapidapi.com/v1/geo
