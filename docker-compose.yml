@@ -14,21 +14,11 @@ services:
       - REACT_APP_GEO_API_URL=${REACT_APP_GEO_API_URL}
       - REACT_APP_RAPIDAPI_KEY=${REACT_APP_RAPIDAPI_KEY}
       - REACT_APP_RAPIDAPI_HOST=${REACT_APP_RAPIDAPI_HOST}
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   redis:
     image: redis:6.2.6
     ports:
       - "6379:6379"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   postgres:
     image: postgres:13.4
@@ -38,11 +28,6 @@ services:
       POSTGRES_PASSWORD: weatherpass
     ports:
       - "5432:5432"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   backend:
     image: ghcr.io/vijai-veerapandian/myweather-app/backend-debug:v1.0
@@ -61,8 +46,19 @@ services:
       - POSTGRES_PASSWORD=weatherpass
       - WEATHER_API_URL=${WEATHER_API_URL}
       - WEATHER_API_KEY=${WEATHER_API_KEY}
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+      
+  prometheus:
+    image: prom/prometheus:v2.29.2
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:8.2.5
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
