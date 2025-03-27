@@ -2,7 +2,7 @@
 
 ![MyWeather App Screenshot](./assets/screenshot.png)
 
-
+### Architecture 
 ![Architecture Screenshot](./assets/myweatherapp-architecture.png)
 
 ## MyWeather App
