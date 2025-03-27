@@ -3,6 +3,7 @@ const cors = require('cors');
 const redis = require('redis');
 const { Pool } = require('pg');
 const axios = require('axios');
+const promClient = require('prom-client');
 
 const app = express();
 const port = 5001;
@@ -23,6 +24,46 @@ const pool = new Pool({
   database: process.env.POSTGRES_DB,
   password: process.env.POSTGRES_PASSWORD,
   port: process.env.POSTGRES_PORT,
+});
+
+// Create a Registry which registers the metrics
+const register = new promClient.Registry();
+
+// Add default metrics collection
+promClient.collectDefaultMetrics({ register });
+
+// Define custom metrics
+const httpRequestDurationMicroseconds = new promClient.Histogram({
+  name: 'http_request_duration_ms',
+  help: 'Duration of HTTP requests in ms',
+  labelNames: ['method', 'route', 'status_code'],
+  buckets: [50, 100, 200, 300, 400, 500, 750, 1000, 2000, 5000],
+});
+
+const httpRequestCount = new promClient.Counter({
+  name: 'http_request_count',
+  help: 'Total number of HTTP requests',
+  labelNames: ['method', 'route', 'status_code'],
+});
+
+// Register custom metrics
+register.registerMetric(httpRequestDurationMicroseconds);
+register.registerMetric(httpRequestCount);
+
+// Middleware to measure request duration and count
+app.use((req, res, next) => {
+  const end = httpRequestDurationMicroseconds.startTimer();
+  res.on('finish', () => {
+    end({ method: req.method, route: req.route ? req.route.path : '', status_code: res.statusCode });
+    httpRequestCount.inc({ method: req.method, route: req.route ? req.route.path : '', status_code: res.statusCode });
+  });
+  next();
+});
+
+// Expose metrics endpoint
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
 });
 
 // Pre-fetch data and store in Redis
