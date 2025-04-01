@@ -23,3 +23,5 @@ yarn-error.log*
 
 .file.swp
 .env
+node_modules
+node_modules

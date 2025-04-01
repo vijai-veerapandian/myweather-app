@@ -1,5 +1,5 @@
 
-export const GEO_API_URL = process.env.REACT_APP_GEO_API_URL;
+export const REACT_APP_GEO_API_URL = process.env.REACT_APP_GEO_API_URL;
 export const geoApiOptions  = {
 	method: 'GET',
 	headers: {
@@ -8,13 +8,6 @@ export const geoApiOptions  = {
 	}
 };
 
-export const WEATHER_API_URL = process.env.REACT_APP_WEATHER_API_URL;
-export const WEATHER_API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
-
-export const OPENAI_API_URL = process.env.REACT_APP_OPENAI_API_URL;
-export const openAiApiOptions = {
-    headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
-    },
-};
+export const REACT_APP_GEMINI_API_KEY= process.env.REACT_APP_GEMINI_API_KEY;
+export const REACT_APP_WEATHER_API_URL = process.env.REACT_APP_WEATHER_API_URL;
+export const REACT_APP_WEATHER_API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
