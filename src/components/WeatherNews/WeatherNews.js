@@ -1,5 +1,5 @@
 import React from 'react';
-import './weather-news.css';
+import './WeatherNews.css';
 
 const WeatherNews = ({ summary, flagUrl }) => {
   return (
