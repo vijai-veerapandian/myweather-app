@@ -4,6 +4,7 @@ import Search from './components/search/search.js';
 import Forecast from './components/forecast/forecast.js';
 import CurrentWeather from './components/current-weather/current-weather.js';
 import WeatherNews from './components/WeatherNews/WeatherNews.js';
+import WeatherGraph from './components/WeatherGraph/WeatherGraph.js';
 import fetchAndSummarizeWeatherNews from './services/gemini-service.js';
 import { REACT_APP_WEATHER_API_URL, REACT_APP_WEATHER_API_KEY } from './api.js';
 
@@ -12,6 +13,7 @@ function App() {
   const [forecast, setForecast] = useState(null);
   const [weatherNewsSummary, setWeatherNewsSummary] = useState(null);
   const [flagUrl, setFlagUrl] = useState(null); // State to store the flag URL
+  const [hourlyForecast, setHourlyForecast] = useState([]); 
 
   const handleOnSearchChange = (searchData) => {
     const [lat, lon] = searchData.value.split(" ");
@@ -35,6 +37,13 @@ function App() {
 
         setCurrentWeather({ city: searchData.label, ...weatherResponse });
         setForecast({ city: searchData.label, ...forecastResponse });
+
+       // Filter 24-hour forecast data
+       const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+       const hourlyData = forecastResponse.list.filter((entry) =>
+         entry.dt_txt.startsWith(today)
+       );
+       setHourlyForecast(hourlyData); // Set the 24-hour forecast data
 
         // Fetch and summarize weather news using Google Gemini
         try {
@@ -64,7 +73,8 @@ function App() {
         {weatherNewsSummary && (
           <WeatherNews summary={weatherNewsSummary} />
         )}
-      </div>
+        {hourlyForecast.length > 0 && <WeatherGraph data={hourlyForecast} />} {/* Render the graph below WeatherNews */}
+        </div>
       {forecast && <Forecast data={forecast} />}
     </div>
   );

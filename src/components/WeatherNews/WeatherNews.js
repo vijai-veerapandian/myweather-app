@@ -1,16 +1,20 @@
 import React from 'react';
 import './WeatherNews.css';
 
-const WeatherNews = ({ summary, flagUrl }) => {
+const WeatherNews = ({ summary }) => {
+  // Get the current date
+  const currentDate = new Date().toLocaleDateString(undefined, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
   return (
     <div className="weather-news">
-      <h2>Weather News Summary</h2>
+      <h2>Weather Report</h2>
+      <p className="weather-news-date">{currentDate}</p> {/* Display the date */}
       <p>{summary}</p>
-      {flagUrl && (
-        <div className="flag-container">
-          <img src={flagUrl} alt="Country Flag" className="flag-image" />
-        </div>
-      )}
     </div>
   );
 };
