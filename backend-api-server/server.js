@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const redis = require('redis');
@@ -11,20 +12,80 @@ const port = 5001;
 // Enable CORS
 app.use(cors());
 
-// Redis client
-const redisClient = redis.createClient({
-  host: process.env.REDIS_HOST,
-  port: process.env.REDIS_PORT,
-});
+// Function to create a Redis client with retry logic
+const createRedisClient = () => {
+  const redisClient = redis.createClient({
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+    retry_strategy: (options) => {
+      if (options.error && options.error.code === 'ECONNREFUSED') {
+        console.error('Redis connection refused. Retrying...');
+      }
+      if (options.total_retry_time > 1000 * 60) {
+        // Stop retrying after 1 minute
+        console.error('Retry time exhausted. Giving up on Redis.');
+        return new Error('Retry time exhausted');
+      }
+      if (options.attempt > 10) {
+        // Stop retrying after 10 attempts
+        console.error('Too many attempts to connect to Redis. Giving up.');
+        return undefined;
+      }
+      // Retry after 2 seconds
+      return 2000;
+    },
+  });
+
+  redisClient.on('connect', () => {
+    console.log('Connected to Redis successfully!');
+  });
+
+  redisClient.on('error', (err) => {
+    console.error('Redis connection error:', err);
+  });
+
+  return redisClient;
+};
+
+// Initialize Redis client
+const redisClient = createRedisClient();
 
 // PostgreSQL client
-const pool = new Pool({
-  user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DB,
-  password: process.env.POSTGRES_PASSWORD,
-  port: process.env.POSTGRES_PORT,
-});
+// Function to create a PostgreSQL client with retry logic
+const createPostgresClient = async () => {
+  const pool = new Pool({
+    user: process.env.POSTGRES_USER,
+    host: process.env.POSTGRES_HOST,
+    database: process.env.POSTGRES_DB,
+    password: process.env.POSTGRES_PASSWORD,
+    port: process.env.POSTGRES_PORT,
+  });
+
+  const maxRetries = 10;
+  let retries = 0;
+
+  while (retries < maxRetries) {
+    try {
+      // Test the connection
+      await pool.query('SELECT NOW()');
+      console.log('Connected to PostgreSQL successfully!');
+      return pool;
+    } catch (err) {
+      retries++;
+      console.error(`PostgreSQL connection failed. Retrying (${retries}/${maxRetries})...`, err.message);
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds before retrying
+    }
+  }
+
+  console.error('Failed to connect to PostgreSQL after maximum retries. Exiting...');
+  process.exit(1); // Exit the application if connection fails
+};
+
+// Initialize PostgreSQL client
+let pool;
+(async () => {
+  pool = await createPostgresClient();
+})();
 
 // Create a Registry which registers the metrics
 const register = new promClient.Registry();
@@ -69,21 +130,25 @@ app.get('/metrics', async (req, res) => {
 // Pre-fetch data and store in Redis
 const prefetchData = async () => {
   try {
-    const lat = '45.424722222';
-    const lon = '-75.695';
-    const weatherResponse = await axios.get(`${process.env.WEATHER_API_URL}/weather`, {
-      params: {
-        lat,
-        lon,
-        units: 'metric',
-        appid: process.env.WEATHER_API_KEY,
-      },
-    });
-    const weatherData = weatherResponse.data;
-    redisClient.setex(`${lat},${lon}`, 3600, JSON.stringify(weatherData));
-    console.log('Pre-fetched weather data and stored in Redis');
+      const lat = '45.424722222';
+      const lon = '-75.695';
+      const url = `${process.env.REACT_APP_WEATHER_API_URL}/weather`;
+      const params = {
+          lat,
+          lon,
+          units: 'metric',
+          appid: process.env.REACT_APP_WEATHER_API_KEY,
+      };
+
+      console.log('Fetching weather data from:', url, params);
+
+      const weatherResponse = await axios.get(url, { params });
+      const weatherData = weatherResponse.data;
+
+      redisClient.setex(`${lat},${lon}`, 3600, JSON.stringify(weatherData));
+      console.log('Pre-fetched weather data and stored in Redis');
   } catch (error) {
-    console.error('Error pre-fetching weather data:', error.response ? error.response.data : error.message);
+      console.error('Error pre-fetching weather data:', error.response ? error.response.data : error.message);
   }
 };
 
@@ -104,12 +169,12 @@ app.get('/weather', async (req, res) => {
     } else {
       try {
         // Fetch data from OpenWeatherMap API
-        const weatherResponse = await axios.get(`${process.env.WEATHER_API_URL}/weather`, {
+        const weatherResponse = await axios.get(`${process.env.REACT_APP_WEATHER_API_URL}/weather`, {
           params: {
             lat,
             lon,
             units: 'metric',
-            appid: process.env.WEATHER_API_KEY,
+            appid: process.env.REACT_APP_WEATHER_API_KEY,
           },
         });
         const weatherData = weatherResponse.data;
@@ -134,12 +199,12 @@ app.get('/forecast', async (req, res) => {
 
   try {
     // Fetch data from OpenWeatherMap API
-    const forecastResponse = await axios.get(`${process.env.WEATHER_API_URL}/forecast`, {
+    const forecastResponse = await axios.get(`${process.env.REACT_APP_WEATHER_API_URL}/forecast`, {
       params: {
         lat,
         lon,
         units: 'metric',
-        appid: process.env.WEATHER_API_KEY,
+        appid: process.env.REACT_APP_WEATHER_API_KEY,
       },
     });
     const forecastData = forecastResponse.data;

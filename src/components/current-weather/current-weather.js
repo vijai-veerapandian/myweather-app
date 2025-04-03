@@ -1,28 +1,26 @@
 import React from 'react';
 import './current-weather.css';
 
-const CurrentWeather = ({ data }) => {
-    const currentDate = new Date();
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const formattedDate = currentDate.toLocaleDateString(undefined, options);
-
+const CurrentWeather = ({ data, flagUrl }) => {
     console.log('Current Weather', data);
     return (
         <div className="weather">
             <div className="top">
-                <div>
-                    <p className="city">{data.city}</p>
-                    <div className="temperature">{Math.round(data.main.temp)}°C</div>
-                    <p className="weather-description">{data.weather[0].description}</p>
+                <div className="city">
+                    <span>{data.city}</span>
+                    {flagUrl && (
+                        <img
+                            src={flagUrl}
+                            alt={`${data.city} flag`}
+                            className="flag-image"
+                        />
+                    )}
                 </div>
-                {data.weather[0].icon && (
-                    <img
-                        src={`/icons/${data.weather[0].icon}.png`}
-                        alt="weather"
-                        className="weather-icon"
-                    />
+                {data.weather[0].icon && (<img src={`/icons/${data.weather[0].icon}.png`} alt="weather" className="weather-icon" />
                 )}
             </div>
+            <div className="temperature">{Math.round(data.main.temp)}°C</div>
+            <p className="weather-description">{data.weather[0].description}</p>
             <div className="bottom">
                 <div className="details">
                     <div className="parameter-row">
@@ -42,9 +40,6 @@ const CurrentWeather = ({ data }) => {
                         <span className="parameter-value">{data.main.pressure} hPa</span>
                     </div>
                 </div>
-            </div>
-            <div className="date">
-                <p>{formattedDate}</p>
             </div>
         </div>
     );

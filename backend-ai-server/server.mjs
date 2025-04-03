@@ -6,8 +6,8 @@ import { config } from "dotenv";
 config(); // Load environment variables from .env
 
 // Validate environment variables
-if (!process.env.GEMINI_API_KEY) {
-  console.error("Error: GEMINI_API_KEY is not defined in the environment variables.");
+if (!process.env.REACT_APP_GEMINI_API_KEY) {
+  console.error("Error: REACT_APP_GEMINI_API_KEY is not defined in the environment variables.");
   process.exit(1); // Exit the process with an error code
 }
 const app = express();
@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 // Initialize GoogleGenAI with the API key
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.REACT_APP_GEMINI_API_KEY });
 
 // Route to handle Gemini API calls
 app.post("/api/weather-news", async (req, res) => {
