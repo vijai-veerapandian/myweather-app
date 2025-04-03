@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   react-app:
-    image: frontend:v2.0
+    image: ghcr.io/vijai-veerapandian/myweather-app/frontend:v2.0
     ports:
       - "80:80"
     depends_on:
@@ -47,7 +47,7 @@ services:
         max-file: "3"
 
   backend-api:
-    image: backend-api:v2.0
+    image: ghcr.io/vijai-veerapandian/myweather-app/backend-api:v2.0
     ports:
       - "5001:5001"
     depends_on:
@@ -65,7 +65,7 @@ services:
       - REACT_APP_WEATHER_API_KEY=${REACT_APP_WEATHER_API_KEY}
 
   backend-ai:
-    image: backend-ai:v1.0
+    image: ghcr.io/vijai-veerapandian/myweather-app/backend-ai:v1.0
     ports:
       - "5000:5000"
     environment:
@@ -89,5 +89,22 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
 
+  loki:
+    image: grafana/loki:2.7.3
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:2.7.3
+    volumes:
+      - /var/log:/var/log
+      - ./promtail-config.yaml:/etc/promtail/config.yaml
+    command: -config.file=/etc/promtail/config.yaml
+    depends_on:
+      - loki
+
 volumes:
-  grafana-data:
+  grafana-data
