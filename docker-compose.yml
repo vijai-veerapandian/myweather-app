@@ -2,15 +2,17 @@ version: '3.8'
 
 services:
   react-app:
-    image: ghcr.io/vijai-veerapandian/myweather-app/frontend:v1.1
+    image: ghcr.io/vijai-veerapandian/myweather-app/frontend:v2.0
     ports:
-      - "3000:3000"
+      - "80:80"
     depends_on:
       - redis
       - postgres
-      - backend
+      - backend-api
+      - backend-ai
     environment:
-      - REACT_APP_BACKEND_URL=http://localhost:5001
+      - REACT_APP_BACKEND_API_URL=${REACT_APP_BACKEND_API_URL}
+      - REACT_APP_BACKEND_AI_URL=${REACT_APP_BACKEND_AI_URL}
       - REACT_APP_GEO_API_URL=${REACT_APP_GEO_API_URL}
       - REACT_APP_RAPIDAPI_KEY=${REACT_APP_RAPIDAPI_KEY}
       - REACT_APP_RAPIDAPI_HOST=${REACT_APP_RAPIDAPI_HOST}
@@ -29,7 +31,6 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-      
 
   postgres:
     image: ghcr.io/vijai-veerapandian/myweather-app/postgresdb:v1.0
@@ -45,8 +46,8 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  backend:
-    image: ghcr.io/vijai-veerapandian/myweather-app/backend-debug:v1.0
+  backend-api:
+    image: ghcr.io/vijai-veerapandian/myweather-app/backend-api:v2.0
     ports:
       - "5001:5001"
     depends_on:
@@ -60,10 +61,50 @@ services:
       - POSTGRES_DB=weatherdb
       - POSTGRES_USER=weatheruser
       - POSTGRES_PASSWORD=weatherpass
-      - WEATHER_API_URL=${WEATHER_API_URL}
-      - WEATHER_API_KEY=${WEATHER_API_KEY}
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+      - REACT_APP_WEATHER_API_URL=${REACT_APP_WEATHER_API_URL}
+      - REACT_APP_WEATHER_API_KEY=${REACT_APP_WEATHER_API_KEY}
+
+  backend-ai:
+    image: ghcr.io/vijai-veerapandian/myweather-app/backend-ai:v1.0
+    ports:
+      - "5000:5000"
+    environment:
+      - REACT_APP_GEMINI_API_KEY=${REACT_APP_GEMINI_API_KEY}
+
+  prometheus:
+    image: prom/prometheus:v2.29.2
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:8.2.5
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+  loki:
+    image: grafana/loki:2.7.3
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:2.7.3
+    volumes:
+      - /var/log:/var/log
+      - ./promtail-config.yaml:/etc/promtail/config.yaml
+    command: -config.file=/etc/promtail/config.yaml
+    depends_on:
+      - loki
+
+volumes:
+  grafana-data:

@@ -2,9 +2,6 @@
 
 ![MyWeather App Screenshot](./assets/screenshot.png)
 
-### Architecture 
-![Architecture Screenshot](./assets/myweatherapp-architecture.png)
-
 ## MyWeather App
 
 MyWeather App is a containerized application that uses Redis, PostgreSQL, and a React frontend. This README provides instructions on how to set up and run the application using Docker Compose.
@@ -67,11 +64,61 @@ PostgreSQL is used as the database and is accessible on port 5432. The database 
 
 The backend server is served on port 5001. It uses environment variables to configure the Redis and PostgreSQL connections, as well as the OpenWeatherMap API.
 
-## Logging
+### Prometheus
 
-The application uses Docker's `json-file` logging driver to store logs. The logs are configured to rotate when they reach 10MB in size, and up to 3 log files are retained.
+Prometheus is used for monitoring and scraping metrics from the backend, Redis, and PostgreSQL services. It is accessible on port 9090.
+
+- **Configuration**: The Prometheus configuration file (`prometheus.yml`) is mounted into the container.
+- **Metrics Endpoint**: Prometheus scrapes metrics from the `/metrics` endpoint exposed by the backend service.
+
+### Grafana
+
+Grafana is used for visualizing metrics collected by Prometheus. It is accessible on port 3001.
+
+- **Default Credentials**:
+  - Username: `admin`
+  - Password: `admin` (or the value set in the `GF_SECURITY_ADMIN_PASSWORD` environment variable).
+- **Prometheus Data Source**:
+  - URL: `http://prometheus:9090`
+  - Add this data source in Grafana to visualize metrics.
+
+## Example PromQL Queries
+
+Here are some example PromQL queries you can use in Grafana to visualize metrics:
+
+- **Total HTTP Requests**:
+  ```promql
+  sum(rate(http_request_count[1m]))
+  ```
+
+- **Average Request Duration**:
+  ```promql
+  rate(http_request_duration_ms_sum[1m]) / rate(http_request_duration_ms_count[1m])
+  ```
+
+- **95th Percentile Request Duration**:
+  ```promql
+  histogram_quantile(0.95, sum(rate(http_request_duration_ms_bucket[1m])) by (le))
+  ```
+
+- **Redis Command Duration**:
+  ```promql
+  histogram_quantile(0.95, sum(rate(redis_command_duration_ms_bucket[1m])) by (le, command))
+  ```
+
+- **PostgreSQL Query Duration**:
+  ```promql
+  histogram_quantile(0.95, sum(rate(postgres_query_duration_ms_bucket[1m])) by (le, query))
+  ```
 
 ## Additional Information
+
+Ensure that the `.env` file is not committed to version control by adding it to your `.gitignore` file:
+
+```plaintext
+# .gitignore
+.env
+```
 
 This will help keep your sensitive information secure.
 ```
