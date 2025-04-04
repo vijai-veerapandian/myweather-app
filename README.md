@@ -4,7 +4,7 @@
 
 ## MyWeather App
 
-MyWeather App is a containerized application that uses Redis, PostgreSQL, and a React frontend. This README provides instructions on how to set up and run the application using Docker Compose.
+MyWeather App is a containerized application that uses Redis, PostgreSQL, Prometheus, Grafana, and Loki for monitoring and logging, along with a React frontend. This README provides instructions on how to set up and run the application using Docker Compose.
 
 ## Prerequisites
 
@@ -22,6 +22,10 @@ REACT_APP_RAPIDAPI_HOST=wft-geo-db.p.rapidapi.com
 
 WEATHER_API_URL=https://api.openweathermap.org/data/2.5
 WEATHER_API_KEY=<your key>
+
+REACT_APP_BACKEND_API_URL=http://backend-api:5001
+REACT_APP_BACKEND_AI_URL=http://backend-ai:5000
+REACT_APP_GEMINI_API_KEY=<your key>
 ```
 
 ## Docker Compose
@@ -60,9 +64,14 @@ Redis is used for caching and is accessible on port 6379.
 
 PostgreSQL is used as the database and is accessible on port 5432. The database credentials are configured using environment variables.
 
-### Backend Server
+### Backend API Server
 
-The backend server is served on port 5001. It uses environment variables to configure the Redis and PostgreSQL connections, as well as the OpenWeatherMap API.
+The backend API server is served on port 5001. It uses environment variables to configure the Redis and PostgreSQL connections, as well as the OpenWeatherMap API.
+
+### Backend AI Server
+The backend AI server is served on port 5000. It uses environment variables to configure the Gemini API key for AI-based weather news summarization.
+
+## Monitoring and Logging
 
 ### Prometheus
 
@@ -110,19 +119,44 @@ Here are some example PromQL queries you can use in Grafana to visualize metrics
   ```promql
   histogram_quantile(0.95, sum(rate(postgres_query_duration_ms_bucket[1m])) by (le, query))
   ```
+### Loki
 
+Loki is used for centralized log aggregation. It collects logs from all Docker containers and allows querying and visualization in Grafana. It is accessible on port 3100.
+
+* Configuration: The Loki configuration file (loki-config.yaml) is mounted into the container.
+* Log Collection: Logs are collected using Promtail, which scrapes logs from Docker containers.
+
+## Promtail Configuration
+
+Promtail is configured to scrape logs from Docker containers using the Docker socket. The configuration file (promtail-config.yaml) includes filters to collect logs only from specific containers.
+
+### Example LogQL Queries
+
+* All Logs from a Specific Container:
+
+```bash
+{container="backend-api"}
+```
+* Error logs:
+```bash
+{level="error"}
+```
+* Logs Containing a Specific Keyword:
+```bash
+{container="backend-api"} |= "weather"
+```
 ## Additional Information
 
-Ensure that the `.env` file is not committed to version control by adding it to your `.gitignore` file:
-
-```plaintext
-# .gitignore
-.env
+* Ensure that the .env file is properly configured with all required environment variables.
+* Use the provided PromQL and LogQL queries in Grafana to monitor metrics and logs.
+* For troubleshooting, check the logs of individual containers using:
+```bash
+docker logs <container_name>
 ```
 
+```
 This will help keep your sensitive information secure.
 ```
-
 ### Summary:
 1. **Environment Variables**: Create a .env file to store environment variables.
 2. **Docker Compose Commands**: Include commands to start and stop the application using Docker Compose.
