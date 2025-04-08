@@ -107,4 +107,4 @@ services:
       - loki
 
 volumes:
-  grafana-data
+  grafana-data:
