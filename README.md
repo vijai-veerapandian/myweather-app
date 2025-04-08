@@ -4,7 +4,8 @@
 
 ## MyWeather App
 
-MyWeather App is a containerized application that uses Redis, PostgreSQL, Prometheus, Grafana, and Loki for monitoring and logging, along with a React frontend. This README provides instructions on how to set up and run the application using Docker Compose.
+MyWeather App is a containerized check any city in the planet weather application that uses Redis, PostgreSQL, Prometheus, Grafana, and Loki for monitoring and logging, along with a React frontend. This README provides instructions on how to set up and run the application using Docker Compose.
+
 
 ## Architecture
 
@@ -161,6 +162,27 @@ docker logs <container_name>
 ```
 This will help keep your sensitive information secure.
 ```
+### Summary:
+1. **Environment Variables**: Create a .env file to store environment variables.
+2. **Docker Compose Commands**: Include commands to start and stop the application using Docker Compose.
+3. **Services**: Describe the services (React frontend, Redis, PostgreSQL, backend server) and their configurations.
+4. **Logging**: Explain the logging configuration.
+5. **Additional Information**: Ensure the .env file is not committed to version control.
+
+These updates to the README.md file will provide clear instructions on how to set up and run the application, as well as how to manage environment variables and logging.
+
+## Additional Information
+
+Ensure that the `.env` file is not committed to version control by adding it to your `.gitignore` file:
+
+```plaintext
+# .gitignore
+.env
+```
+
+This will help keep your sensitive information secure.
+```
+
 ### Summary:
 1. **Environment Variables**: Create a .env file to store environment variables.
 2. **Docker Compose Commands**: Include commands to start and stop the application using Docker Compose.
