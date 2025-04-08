@@ -2,6 +2,15 @@ global:
   scrape_interval: 15s
 
 scrape_configs:
+<<<<<<< HEAD
   - job_name: 'backend'
     static_configs:
       - targets: ['localhost:5001']
+=======
+  - job_name: 'backend-api'
+    static_configs:
+      - targets: ['backend-api:5001']
+  - job_name: 'backend-ai'
+    static_configs:
+      - targets: ['backend-ai:5000']
+>>>>>>> dockerized

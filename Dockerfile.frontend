@@ -1,5 +1,5 @@
-# Use an official Node.js runtime as a parent image
-FROM node:20-alpine
+# Stage 1: Build the React application
+FROM node:20-alpine AS build
 
 # Set the working directory
 WORKDIR /app
@@ -19,8 +19,14 @@ ENV NODE_OPTIONS=--openssl-legacy-provider
 # Build the React application
 RUN npm run build
 
-# Set the command to serve the build
-CMD ["npm", "start"]
+# Stage 2: Serve the React application using a lightweight web server
+FROM nginx:alpine
+
+# Copy the build output from the previous stage
+COPY --from=build /app/build /usr/share/nginx/html
 
 # Expose the port the app runs on
-EXPOSE 3000
+EXPOSE 80
+
+# Start the web server
+CMD ["nginx", "-g", "daemon off;"]
