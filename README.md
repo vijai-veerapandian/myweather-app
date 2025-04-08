@@ -7,7 +7,7 @@
 MyWeather App is a containerized check any city in the planet weather application that uses Redis, PostgreSQL, Prometheus, Grafana, and Loki for monitoring and logging, along with a React frontend. This README provides instructions on how to set up and run the application using Docker Compose.
 
 
-## Architecture
+## Architecture Design
 
 ![MyWeather App Screenshot](./assets/myweather-app-architecture.png)
 
