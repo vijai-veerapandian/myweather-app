@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   react-app:
-    image: myweather-frontend:v1.1
+    image: ghcr.io/vijai-veerapandian/myweather-app/myweather-frontend:v1.0
     ports:
       - "80:80"
     depends_on:
