@@ -11,8 +11,8 @@ services:
       - backend-api
       - backend-ai
     environment:
-      - REACT_APP_BACKEND_API_URL=${REACT_APP_BACKEND_API_URL}
-      - REACT_APP_BACKEND_AI_URL=${REACT_APP_BACKEND_AI_URL}
+      - REACT_APP_BACKEND_API_URL=http://backend-api:5001
+      - REACT_APP_BACKEND_AI_URL=http://backend-ai:5000
       - REACT_APP_GEO_API_URL=${REACT_APP_GEO_API_URL}
       - REACT_APP_RAPIDAPI_KEY=${REACT_APP_RAPIDAPI_KEY}
       - REACT_APP_RAPIDAPI_HOST=${REACT_APP_RAPIDAPI_HOST}
@@ -21,6 +21,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    networks:
+      - app-network
 
   redis:
     image: redis:6.2.6
@@ -31,6 +33,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    networks:
+      - app-network
 
   postgres:
     image: ghcr.io/vijai-veerapandian/myweather-app/postgresdb:v1.0
@@ -45,6 +49,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    networks:
+      - app-network
 
   backend-api:
     image: ghcr.io/vijai-veerapandian/myweather-app/backend-api:v2.0
@@ -63,6 +69,8 @@ services:
       - POSTGRES_PASSWORD=weatherpass
       - REACT_APP_WEATHER_API_URL=${REACT_APP_WEATHER_API_URL}
       - REACT_APP_WEATHER_API_KEY=${REACT_APP_WEATHER_API_KEY}
+    networks:
+      - app-network
 
   backend-ai:
     image: ghcr.io/vijai-veerapandian/myweather-app/backend-ai:v1.0
@@ -70,6 +78,8 @@ services:
       - "5000:5000"
     environment:
       - REACT_APP_GEMINI_API_KEY=${REACT_APP_GEMINI_API_KEY}
+    networks:
+      - app-network
 
   prometheus:
     image: prom/prometheus:v2.29.2
@@ -77,6 +87,8 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
+    networks:
+      - app-network
 
   grafana:
     image: grafana/grafana:8.2.5
@@ -88,23 +100,12 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - grafana-data:/var/lib/grafana
-
-  loki:
-    image: grafana/loki:2.7.3
-    ports:
-      - "3100:3100"
-    command: -config.file=/etc/loki/local-config.yaml
-    volumes:
-      - ./loki-config.yaml:/etc/loki/local-config.yaml
-
-  promtail:
-    image: grafana/promtail:2.7.3
-    volumes:
-      - /var/log:/var/log
-      - ./promtail-config.yaml:/etc/promtail/config.yaml
-    command: -config.file=/etc/promtail/config.yaml
-    depends_on:
-      - loki
+    networks:
+      - app-network
 
 volumes:
   grafana-data:
+
+networks:
+  app-network:
+    driver: bridge
