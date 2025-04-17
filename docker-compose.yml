@@ -1,8 +1,9 @@
 version: '3.8'
 
 services:
-  react-app:
+  frontend:
     image: ghcr.io/vijai-veerapandian/myweather-app/frontend:v2.0
+    container_name: frontend 
     ports:
       - "80:80"
     depends_on:
@@ -54,6 +55,7 @@ services:
 
   backend-api:
     image: ghcr.io/vijai-veerapandian/myweather-app/backend-api:v2.0
+    container_name: backend-api
     ports:
       - "5001:5001"
     depends_on:
@@ -74,6 +76,7 @@ services:
 
   backend-ai:
     image: ghcr.io/vijai-veerapandian/myweather-app/backend-ai:v1.0
+    container_name: backend-ai
     ports:
       - "5000:5000"
     environment:
