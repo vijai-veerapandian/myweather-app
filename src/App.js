@@ -5,7 +5,7 @@ import Forecast from './components/forecast/forecast.js';
 import CurrentWeather from './components/current-weather/current-weather.js';
 import WeatherNews from './components/WeatherNews/WeatherNews.js';
 import WeatherGraph from './components/WeatherGraph/WeatherGraph.js';
-import fetchAndSummarizeWeatherNews from './services/gemini-service.js';
+import fetchAndSummarizeWeatherNews from './components/gemini-ai/gemini-service.js';
 import { REACT_APP_WEATHER_API_URL, REACT_APP_WEATHER_API_KEY } from './api.js';
 
 function App() {
