@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend-ai:
-    image: backend-ai:latest
+    image: ghcr.io/vijai-veerapandian/myweather-app-backend-ai:latest
     container_name: backend-ai
     ports:
       - "5000:5000" # Expose backend on host port 5000
@@ -18,7 +18,7 @@ services:
       - app-network
 
   frontend:
-    image: frontend:latest
+    image: ghcr.io/vijai-veerapandian/myweather-app-frontend:latest
     container_name: frontend
     ports:
       - "3000:3000" # Expose frontend on host port 3000
