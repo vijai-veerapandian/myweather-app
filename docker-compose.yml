@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  backend-ai:
+    image: backend-ai:latest
+    container_name: backend-ai
+    ports:
+      - "5000:5000" # Expose backend on host port 5000
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - CORS_ORIGIN=http://localhost:3000 # Allow requests from the frontend
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"    
+    networks:
+      - app-network
+
+  frontend:
+    image: frontend:latest
+    container_name: frontend
+    ports:
+      - "3000:3000" # Expose frontend on host port 3000
+    environment:
+      - REACT_APP_BACKEND_AI_URL=http://localhost:5000 # Backend service name
+      - REACT_APP_GEO_API_URL=${REACT_APP_GEO_API_URL}
+      - REACT_APP_RAPIDAPI_KEY=${REACT_APP_RAPIDAPI_KEY}
+      - REACT_APP_RAPIDAPI_HOST=${REACT_APP_RAPIDAPI_HOST}
+      - REACT_APP_WEATHER_API_URL=${REACT_APP_WEATHER_API_URL}
+      - REACT_APP_WEATHER_API_KEY=${REACT_APP_WEATHER_API_KEY}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - app-network
+
+  loki:
+    image: grafana/loki:2.8.2
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - app-network
+
+  promtail:
+    image: grafana/promtail:2.8.2
+    container_name: promtail
+    volumes:
+      - /var/log:/var/log
+      - ./promtail-config.yml:/etc/promtail/config.yml
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - app-networks
+
+networks:
+  app-network:
+    driver: bridge
