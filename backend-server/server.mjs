@@ -12,6 +12,7 @@ if (!process.env.GEMINI_API_KEY) {
 }
 const app = express();
 const PORT = process.env.PORT || 5000;
+const HOST = process.env.REACT_APP_BACKEND_AI_URL || `http://localhost:${PORT}`;
 
 // Middleware
 app.use(cors());
@@ -51,5 +52,5 @@ app.post("/api/weather-news", async (req, res) => {
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Backend server is running on http://localhost:${PORT}`);
+  console.log(`Backend server is running on ${HOST}`);
 });
