@@ -12,7 +12,7 @@ services:
     restart: always 
 
   frontend:
-    image: ghcr.io/vijai-veerapandian/myweather-app/frontend:v2.9
+    image: ghcr.io/vijai-veerapandian/myweather-app/frontend:v2.10
     container_name: myweather-frontend
     ports:
       - "80:80" 
