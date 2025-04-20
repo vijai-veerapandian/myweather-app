@@ -1,7 +1,7 @@
 // filepath: /home/vboxuser/apps-dev/myweather-app/src/services/gemini-service.js
 const fetchAndSummarizeWeatherNews = async (city) => {
     try {
-        const backendUrl = process.env.REACT_APP_BACKEND_AI_URL || 'http://localhost:5000'; // Use environment variable or fallback to localhost
+        const backendUrl = process.env.REACT_APP_BACKEND_AI_URL; // Use environment variable or fallback to localhost
         const response = await fetch(`${backendUrl}/api/weather-news`, {
             method: 'POST',
             headers: {
