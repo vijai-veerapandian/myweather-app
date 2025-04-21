@@ -1,0 +1,37 @@
+# /home/vboxuser/apps-dev/myweather-app3/docker-compose.yml
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    image: myweather-backend-local
+    container_name: myweather-backend # Okay, but optional
+    restart: unless-stopped
+    environment:
+      - PORT=5000 # Good: For the backend application inside the container
+      - GEMINI_API_KEY=${GEMINI_API_KEY} # Good: Runtime env var for backend
+      - REACT_APP_RAPIDAPI_KEY=${REACT_APP_RAPIDAPI_KEY} # Okay, if backend needs it directly at runtime
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        REACT_APP_WEATHER_API_URL: ${REACT_APP_WEATHER_API_URL}
+        REACT_APP_WEATHER_API_KEY: ${REACT_APP_WEATHER_API_KEY}
+        REACT_APP_GEO_API_URL: ${REACT_APP_GEO_API_URL}
+        REACT_APP_RAPIDAPI_KEY: ${REACT_APP_RAPIDAPI_KEY}
+        REACT_APP_RAPIDAPI_HOST: ${REACT_APP_RAPIDAPI_HOST}
+        REACT_APP_BACKEND_AI_URL: ${REACT_APP_BACKEND_AI_URL}
+    container_name: myweather-frontend # Okay, but optional
+    restart: unless-stopped
+    ports:
+      - "3000:80" # Correct: Maps host 3000 to Nginx container 80
+    depends_on:
+      - backend # Correct: Ensures backend starts first
+
+networks:
+  default:
+    driver: bridge # Fine for most cases
