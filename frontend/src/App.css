@@ -1,0 +1,8 @@
+.main-container {
+  display: flex; /* Use Flexbox to align items horizontally */
+  justify-content: center; /* Center the components horizontally */
+  align-items: flex-start; /* Align items at the top */
+  gap: 20px; /* Add spacing between the components */
+  margin: 20px auto; /* Center the container horizontally */
+  max-width: 1080px; /* Ensure the container doesn't stretch too wide */
+}

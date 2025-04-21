@@ -1,0 +1,25 @@
+# /home/vboxuser/apps-dev/myweather-app3/myweather-app/.dockerignore
+
+# Dependencies
+node_modules
+
+# Build artifacts
+build
+
+# Environment variables file (should not be in image)
+.env*
+!.env.example
+
+# Git files
+.git
+.gitignore
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
