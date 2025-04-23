@@ -2,11 +2,10 @@
 version: '3.8'
 
 services:
-  backend:
+  weatherai:
     build:
-      context: ./backend
-    image: myweather-backend-local
-    container_name: myweather-backend # Okay, but optional
+      context: ./weatherai
+    container_name: myweather-backend
     restart: unless-stopped
     environment:
       - PORT=5000 # Good: For the backend application inside the container
@@ -14,7 +13,6 @@ services:
       - REACT_APP_RAPIDAPI_KEY=${REACT_APP_RAPIDAPI_KEY} # Okay, if backend needs it directly at runtime
     ports:
       - "5000:5000"
-
   frontend:
     build:
       context: ./frontend
@@ -25,13 +23,13 @@ services:
         REACT_APP_RAPIDAPI_KEY: ${REACT_APP_RAPIDAPI_KEY}
         REACT_APP_RAPIDAPI_HOST: ${REACT_APP_RAPIDAPI_HOST}
         REACT_APP_BACKEND_AI_URL: ${REACT_APP_BACKEND_AI_URL}
-    container_name: myweather-frontend # Okay, but optional
+    container_name: myweather-frontend
     restart: unless-stopped
     ports:
-      - "3000:80" # Correct: Maps host 3000 to Nginx container 80
+      - "3000:80"
     depends_on:
-      - backend # Correct: Ensures backend starts first
+      - weatherai
 
 networks:
   default:
-    driver: bridge # Fine for most cases
+    driver: bridge

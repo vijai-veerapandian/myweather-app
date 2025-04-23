@@ -42,14 +42,32 @@ const Forecast = ({ data }) => {
               </AccordionItemButton>
             </AccordionItemHeading>
             <AccordionItemPanel>
-              {/* Add checks for nested data in panel too if needed */}
-              <div className="daily-details-grid">
-                 {/* ... panel items ... ensure item.main, item.clouds etc. exist */}
-                 <div className="daily-details-grid-item">
-                   <label>Pressure:</label>
-                   <label>{item.main?.pressure || 'N/A'} hPa</label> {/* Optional chaining example */}
-                 </div>
-                 {/* ... other items ... */}
+            <div className="daily-details-grid">
+                {/* Pressure */}
+                <div className="daily-details-grid-item">
+                  <label>Pressure:</label>
+                  <label>{item.main?.pressure || 'N/A'} hPa</label>
+                </div>
+                {/* Humidity */}
+                <div className="daily-details-grid-item">
+                  <label>Humidity:</label>
+                  <label>{item.main?.humidity || 'N/A'}%</label>
+                </div>
+                {/* Wind Speed */}
+                <div className="daily-details-grid-item">
+                  <label>Wind Speed:</label>
+                  <label>{item.wind?.speed || 'N/A'} m/s</label>
+                </div>
+                {/* Cloudiness */}
+                <div className="daily-details-grid-item">
+                  <label>Cloudiness:</label>
+                  <label>{item.clouds?.all || 'N/A'}%</label>
+                </div>
+                {/* Feels Like */}
+                <div className="daily-details-grid-item">
+                  <label>Feels Like:</label>
+                  <label>{item.main?.feels_like || 'N/A'}°C</label>
+                </div>
               </div>
             </AccordionItemPanel>
           </AccordionItem>
