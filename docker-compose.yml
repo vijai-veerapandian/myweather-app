@@ -13,6 +13,13 @@ services:
       - REACT_APP_RAPIDAPI_KEY=${REACT_APP_RAPIDAPI_KEY} # Okay, if backend needs it directly at runtime
     ports:
       - "5000:5000"
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://loki:3100/loki/api/v1/push"
+        # Add labels if desired
+        loki-external-labels: job=docker,service=weatherai
+
   frontend:
     build:
       context: ./frontend
@@ -29,6 +36,44 @@ services:
       - "3000:80"
     depends_on:
       - weatherai
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://loki:3100/loki/api/v1/push"
+        # Add labels if desired
+        loki-external-labels: job=docker,service=frontend
+
+  loki:
+    image: grafana/loki:2.9.1
+    container_name: loki
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    command:
+      - -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki-config:/etc/loki
+  grafana:
+    image: grafana/grafana:10.0.0
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - loki
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://loki:3100/loki/api/v1/push"
+        # Add labels if desired
+        loki-external-labels: job=docker,service=grafana
+
+volumes:
+  grafana-data:
 
 networks:
   default:
