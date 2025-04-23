@@ -1,127 +1,81 @@
-# MyWeather App
+# /home/vboxuser/apps-dev/myweather-app3/testv4/myweather-app/README.md
 
-MyWeather App is a simple weather application built with React. It allows users to search for a city and view the current weather, a 7-day forecast, and summarized weather news using Gemini AI.
+![MyWeather App Screenshot](./assets/ottawacityweather.png)
 
-## Features
+## MyWeather App
 
-- Search for a city to get current weather information
-- View a 7-day weather forecast
-- Get summarized weather news about the searched city
-- Responsive design
+A simple weather application using a React frontend and an AI-powered backend. Logs are collected using Loki and visualized with Grafana.
 
-## Screenshot
+## Prerequisites
 
-![MyWeather App Screenshot](./assets/screenshot.png)
+*   Docker
+*   Docker Compose
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+1.  **Set up Environment Variables:**
+    Create a file named `.env` in this directory (`/home/vboxuser/apps-dev/myweather-app3/testv4/myweather-app/`) and add your API keys:
 
-### Prerequisites
+    ```plaintext
+    # .env file contents
 
-You need to have the following installed on your machine:
+    # --- Required API Keys ---
+    REACT_APP_RAPIDAPI_KEY=your_rapidapi_key_here
+    REACT_APP_WEATHER_API_KEY=your_openweathermap_api_key_here
+    GEMINI_API_KEY=your_gemini_api_key_here
 
-- [Node.js](https://nodejs.org/)
-- [npm](https://www.npmjs.com/)
+    # --- Optional/Default URLs (usually fine as is) ---
+    REACT_APP_GEO_API_URL=https://wft-geo-db.p.rapidapi.com/v1/geo
+    REACT_APP_RAPIDAPI_HOST=wft-geo-db.p.rapidapi.com
+    REACT_APP_WEATHER_API_URL=https://api.openweathermap.org/data/2.5
+    REACT_APP_BACKEND_AI_URL=http://localhost:5000
+    ```
+    **Important:** Add `.env` to your `.gitignore` file to avoid committing secrets!
 
-### Installing
+2.  **Run the Application:**
+    Open your terminal in this project directory and run:
 
-1. Clone the repository:
+    ```bash
+    # Build the images (needed the first time or after code changes)
+    sudo docker-compose build
 
-```bash
-git clone https://github.com/yourusername/myweather-app.git
-```
+    # Start all services
+    sudo docker-compose up -d
+    ```
 
-2. Navigate to the project directory:
+## Accessing the Services
 
-```bash
-cd myweather-app
-```
+*   **Weather App Frontend:** http://localhost:3000
+*   **Grafana (for Logs):** http://localhost:3001
+    *   Login: `admin` / `admin`
 
-3. Install the dependencies:
+## Viewing Logs in Grafana
 
-```bash
-npm install
-```
+1.  Open Grafana: http://localhost:3001
+2.  Log in (`admin`/`admin`).
+3.  **Add Loki Data Source (if not already done):**
+    *   Go to Connections (or Configuration) -> Data Sources -> Add data source.
+    *   Select `Loki`.
+    *   Set the **URL** to: `http://loki:3100`
+    *   Click `Save & Test`.
+4.  **Explore Logs:**
+    *   Go to the `Explore` section (compass icon).
+    *   Select the `Loki` data source from the dropdown.
+    *   Use LogQL queries to find logs, for example:
+        *   `{service="frontend"}` - Show logs from the React frontend.
+        *   `{service="weatherai"}` - Show logs from the backend service.
 
-### Running the App
+## Stopping the Application
 
-To start the development server, run:
-
-```bash
-npm start
-```
-
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser. The page will reload when you make changes. You may also see any lint errors in the console.
-
-### Backend Server
-
-This project includes a backend server that uses **Gemini AI** to collect weather news about the searched city and summarize it.
-
-#### Starting the Backend Server
-
-1. Navigate to the backend server directory:
-   ```bash
-   cd backend-server
-   ```
-
-2. Install the backend server dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the backend server:
-   ```bash
-   node server.mjs
-   ```
-
-The backend server will run on [http://localhost:5000](http://localhost:5000).
-
-#### Backend Server Functionality
-
-- The backend server uses **Gemini AI** to fetch weather-related news for the searched city.
-- It summarizes the news into a concise format and sends it to the frontend.
-- Ensure you have a valid **Gemini API key** configured in the `.env` file of the backend server.
-
-### Running Tests
-
-To launch the test runner in the interactive watch mode, run:
+To stop and remove the containers:
 
 ```bash
-npm test
+sudo docker-compose down
 ```
+(If the above command times out, you might need to increase the timeout: COMPOSE_HTTP_TIMEOUT=120 sudo docker-compose down)
 
-### Building the App
-
-To build the app for production to the `build` folder, run:
-
-```bash
-npm run build
-```
-
-It correctly bundles React in production mode and optimizes the build for the best performance. The build is minified, and the filenames include the hashes. Your app is ready to be deployed!
-
-### Deployment
-
-For more information on how to deploy the app, see the [Create React App documentation](https://facebook.github.io/create-react-app/docs/deployment).
-
-## Built With
-
-- [React](https://reactjs.org/) - The web framework used
-- [OpenWeatherMap API](https://openweathermap.org/api) - Weather data provider
-- [GeoDB Cities API](https://rapidapi.com/wirefreethought/api/geodb-cities) - City data provider
-- [Gemini AI](https://generativelanguage.googleapis.com/) - AI-powered weather news summarization
-
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
-## Acknowledgments
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- etc
+Services Overview
+frontend: The React user interface.
+weatherai: The backend API service.
+loki: Stores logs from other services.
+grafana: Visualizes logs stored in Loki.
