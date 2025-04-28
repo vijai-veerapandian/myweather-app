@@ -2,23 +2,25 @@
 version: '3.8'
 
 services:
-  weatherai:
+  backend:
     build:
-      context: ./weatherai
+      context: ./backend
     container_name: myweather-backend
     restart: unless-stopped
     environment:
-      - PORT=5000 # Good: For the backend application inside the container
-      - GEMINI_API_KEY=${GEMINI_API_KEY} # Good: Runtime env var for backend
-      - REACT_APP_RAPIDAPI_KEY=${REACT_APP_RAPIDAPI_KEY} # Okay, if backend needs it directly at runtime
+      - PORT=5000
+      - GEMINI_API_KEY=${GEMINI_API_KEY} 
+      - REACT_APP_RAPIDAPI_KEY=${REACT_APP_RAPIDAPI_KEY}
     ports:
       - "5000:5000"
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
-        # Add labels if desired
-        loki-external-labels: job=docker,service=weatherai
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 5000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   frontend:
     build:
@@ -35,24 +37,50 @@ services:
     ports:
       - "3000:80"
     depends_on:
-      - weatherai
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
-        # Add labels if desired
-        loki-external-labels: job=docker,service=frontend
+      - backend
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   loki:
-    image: grafana/loki:2.9.1
+    image: grafana/loki:2.8.2
     container_name: loki
     restart: unless-stopped
+    user: "0:0"
     ports:
       - "3100:3100"
     command:
       - -config.file=/etc/loki/local-config.yaml
     volumes:
       - ./loki-config:/etc/loki
+      - loki-data:/loki
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 3100"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  promtail:
+    image: grafana/promtail:2.9.1
+    container_name: promtail
+    restart: unless-stopped
+    volumes:
+      - ./promtail-config:/etc/promtail
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks:
+      - default
+
   grafana:
     image: grafana/grafana:10.0.0
     container_name: grafana
@@ -65,15 +93,62 @@ services:
       - grafana-data:/var/lib/grafana
     depends_on:
       - loki
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
-        # Add labels if desired
-        loki-external-labels: job=docker,service=grafana
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s      
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    container_name: cadvisor
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 8080"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s  
+
+  prometheus:
+    image: prom/prometheus:v2.47.2
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus-config:/etc/prometheus
+      - prometheus-data:/prometheus        
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - default
+    depends_on:
+      - cadvisor
+    healthcheck: 
+      test: ["CMD-SHELL", "nc -z localhost 9090"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
 volumes:
-  grafana-data:
+  grafana-data: {}
+  loki-data: {}
+  prometheus-data: {}
 
 networks:
   default:

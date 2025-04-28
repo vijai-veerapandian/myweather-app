@@ -1,0 +1,40 @@
+# /home/vboxuser/2-local-dev-repos/myweather-app3/testv4/myweather-app/promtail-config/config.yml
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml # Stores read positions for log files (important for file scraping, less critical but harmless for docker logs)
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push # Correct URL to push logs to Loki service
+
+scrape_configs:
+- job_name: containers # Defines the job label for logs scraped by this config
+  docker_sd_configs:
+    - host: unix:///var/run/docker.sock # Tells Promtail to use Docker Service Discovery via the socket
+      refresh_interval: 5s # How often to check Docker for new/removed containers
+
+  relabel_configs:
+    # Add the job_name as the 'job' label (standard practice)
+    - source_labels: ['__meta_docker_container_job_name']
+      target_label: 'job'
+
+    # Extract container name (strip leading '/' if present)
+    - source_labels: ['__meta_docker_container_name']
+      regex: '/?(.*)'
+      target_label: 'container'
+
+    # Extract the docker-compose service name
+    - source_labels: ['__meta_docker_container_label_com_docker_compose_service']
+      target_label: 'service'
+
+    # Extract the docker-compose project name
+    - source_labels: ['__meta_docker_container_label_com_docker_compose_project']
+      target_label: 'project'
+
+    # Extract the container image name
+    - source_labels: ['__meta_docker_container_image']
+      target_label: 'image'
+
