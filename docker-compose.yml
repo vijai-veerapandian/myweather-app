@@ -90,15 +90,21 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
+      - ./grafana-provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana-provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana-dashboards:/var/lib/grafana/dashboards
       - grafana-data:/var/lib/grafana
     depends_on:
       - loki
+      - prometheus
     healthcheck:
       test: ["CMD-SHELL", "nc -z localhost 3000"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 60s      
+      start_period: 60s
+    networks:
+      - default      
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.2
