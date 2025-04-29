@@ -1,0 +1,12 @@
+# ./grafana-provisioning/dashboards/dashboards.yaml
+apiVersion: 1
+
+providers:
+  - name: 'default-dashboards'
+    orgId: 1                
+    folder: 'MyWeather App'   
+    type: file
+    disableDeletion: false  
+    editable: true            
+    options:
+      path: /var/lib/grafana/dashboards
