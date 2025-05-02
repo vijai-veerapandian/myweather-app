@@ -8,7 +8,7 @@ MyWeather App is a containerized application that uses Redis, PostgreSQL, and a 
 
 ## Architecture
 
-![MyWeather App Screenshot](./assets/Updated-microservice-architecturewith-Infra-automation.jpg)
+![MyWeather App Screenshot](./assets/microservice-docker-compose.jpg)
 
 
 ## Prerequisites
