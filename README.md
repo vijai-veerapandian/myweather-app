@@ -57,14 +57,6 @@ This command will stop and remove all the containers defined in the `docker-comp
 
 The React frontend is served on port 3000. It uses environment variables to configure the API URLs and headers.
 
-### Redis
-
-Redis is used for caching and is accessible on port 6379.
-
-### PostgreSQL
-
-PostgreSQL is used as the database and is accessible on port 5432. The database credentials are configured using environment variables.
-
 ### Backend Server
 
 The backend server is served on port 5001. It uses environment variables to configure the Redis and PostgreSQL connections, as well as the OpenWeatherMap API.
