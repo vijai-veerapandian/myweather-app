@@ -85,34 +85,6 @@ Grafana is used for visualizing metrics collected by Prometheus. It is accessibl
 
   Loki datasource based dashboard
   ![Final Architecture Screemshot](./assets/Logs-monitoring.jpg)
-## Example PromQL Queries
-
-Here are some example PromQL queries you can use in Grafana to visualize metrics:
-
-- **Total HTTP Requests**:
-  ```promql
-  sum(rate(http_request_count[1m]))
-  ```
-
-- **Average Request Duration**:
-  ```promql
-  rate(http_request_duration_ms_sum[1m]) / rate(http_request_duration_ms_count[1m])
-  ```
-
-- **95th Percentile Request Duration**:
-  ```promql
-  histogram_quantile(0.95, sum(rate(http_request_duration_ms_bucket[1m])) by (le))
-  ```
-
-- **Redis Command Duration**:
-  ```promql
-  histogram_quantile(0.95, sum(rate(redis_command_duration_ms_bucket[1m])) by (le, command))
-  ```
-
-- **PostgreSQL Query Duration**:
-  ```promql
-  histogram_quantile(0.95, sum(rate(postgres_query_duration_ms_bucket[1m])) by (le, query))
-  ```
 
 ## Additional Information
 
@@ -131,7 +103,7 @@ This will help keep your sensitive information secure.
 2. **Docker Compose Commands**: Include commands to start and stop the application using Docker Compose.
 3. **Services**: Describe the services (React frontend, Redis, PostgreSQL, backend server) and their configurations.
 4. **Logging**: Explain the logging configuration.
-5. **Additional Information**: Ensure the .env file is not committed to version control.
+5. **Additional Information**: Ensure the .env file is not committed to version control.( Here I have commited just quick application validation)
 
 These updates to the README.md file will provide clear instructions on how to set up and run the application, as well as how to manage environment variables and logging.
 
