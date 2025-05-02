@@ -77,8 +77,14 @@ Grafana is used for visualizing metrics collected by Prometheus. It is accessibl
   - Password: `admin` (or the value set in the `GF_SECURITY_ADMIN_PASSWORD` environment variable).
 - **Prometheus Data Source**:
   - URL: `http://prometheus:9090`
-  - Add this data source in Grafana to visualize metrics.
+  - URL: `http://loki:3100`
+  - I have created and already imported the json file for view prometheus and Loki based dashboard on Grafana to monitoring the container metrics and errors via Grafana dashboard.
 
+  Prometheus datasource based dashboard
+  ![Final Architecture Screemshot](./assets/Grafana-complete-containers-dashboard.jpg)
+
+  Loki datasource based dashboard
+  ![Final Architecture Screemshot](./assets/Logs-monitoring.jpg)
 ## Example PromQL Queries
 
 Here are some example PromQL queries you can use in Grafana to visualize metrics:
