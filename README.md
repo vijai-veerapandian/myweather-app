@@ -1,6 +1,6 @@
 ## Screenshot
 
-![MyWeather App Screenshot](./assets/ottawacityweather.png)
+![MyWeather App Screenshot](./assets/Cityweather-search1.jpg)
 
 ## MyWeather App
 
@@ -8,7 +8,7 @@ MyWeather App is a containerized application that uses Redis, PostgreSQL, and a 
 
 ## Architecture
 
-![MyWeather App Screenshot](./assets/updated-archi.png)
+![MyWeather App Screenshot](./assets/Updated-microservice-architecturewith-Infra-automation.jpg)
 
 
 ## Prerequisites
