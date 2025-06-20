@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml -o manifests/
+    kompose.version: 1.36.0 (HEAD)
+  labels:
+    io.kompose.service: backend
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: backend
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml -o manifests/
+        kompose.version: 1.36.0 (HEAD)
+      labels:
+        io.kompose.service: backend
+    spec:
+      imagePullSecrets:
+        - name: ghcr-creds
+      containers:
+        - env:
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend-api-keys
+                  key: GEMINI_API_KEY
+            - name: PORT
+              value: "5000"
+            - name: REACT_APP_RAPIDAPI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend-api-keys
+                  key: REACT_APP_RAPIDAPI_KEY
+          image: ghcr.io/vijai-veerapandian/myweather-backend:1.0
+          name: myweather-backend
+          ports:
+            - containerPort: 5000
+              protocol: TCP
+      restartPolicy: Always
