@@ -4,7 +4,7 @@
 
 ## MyWeather App
 
-MyWeather App is a containerized application that uses Redis, PostgreSQL, and a React frontend. This README provides instructions on how to set up and run the application using Docker Compose.
+MyWeather App is a containerized application that uses React frontend and Backend made of API calls to fetch realtime Weather data and also Google Gemini AI integrated weather summarizer and monitoring system using prometheus-grafana-loki stack. This README provides instructions on how to set up and run the application using Docker Compose.
 
 ## Architecture
 
