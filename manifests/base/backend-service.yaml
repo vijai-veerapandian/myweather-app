@@ -6,9 +6,10 @@ metadata:
   labels:
     io.kompose.service: backend
   name: backend
+  namespace: myweather
 spec:
   ports:
-    - name: "5000"
+    - name: "http"
       port: 5000
       targetPort: 5000
   selector:

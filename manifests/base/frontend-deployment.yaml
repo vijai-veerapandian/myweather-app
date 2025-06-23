@@ -6,6 +6,7 @@ metadata:
   labels:
     io.kompose.service: frontend
   name: frontend
+  namespace: myweather
 spec:
   replicas: 1
   selector:
@@ -18,11 +19,12 @@ spec:
       labels:
         io.kompose.service: frontend
     spec:
-      imagePullSecrets:
-        - name: ghcr-creds
       containers:
         - image: ghcr.io/vijai-veerapandian/myweather-frontend:1.0
           name: myweather-frontend
+          envFrom:
+            - configMapRef:
+                name: frontend-configmap
           ports:
             - containerPort: 80
               protocol: TCP

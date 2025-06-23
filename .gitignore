@@ -25,3 +25,4 @@ yarn-error.log*
 .file.swp
 .vscode
 .env
+age.agekey
