@@ -111,7 +111,7 @@ This will help keep your sensitive information secure.
 ( Here I have commited for quick application validation)
 
 These updates to the README.md file will provide clear instructions on how to set up and run the application, as well as how to manage environment variables and logging.
-
+```
 ### Kubernetes Deployment 
 
 kubectl apply -f manifests/staging/namespace.yaml 
