@@ -10,11 +10,15 @@ MyWeather App is a containerized application that uses React frontend and Backen
 
 ![MyWeather App Screenshot](./assets/microservice-docker-compose.jpg)
 
+## Overall Architecture
+![MyWeather App Screenshot](./assets/Updated-microservice-architecturewith-Infra-automation.jpg)
 
 ## Prerequisites
 
 - Docker
 - Docker Compose
+Screenshot of the work (./assets/docker-compose-status.jpg)
+
 
 ## Environment Variables
 
