@@ -113,4 +113,5 @@ This will help keep your sensitive information secure.
 These updates to the README.md file will provide clear instructions on how to set up and run the application, as well as how to manage environment variables and logging.
 
 Managing secret: 
+
 SOPS_AGE_KEY_FILE=./manifests/age.agekey sops --decrypt manifests/backend-se^Cet.yaml | kubectl apply -f -
