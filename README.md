@@ -1,6 +1,6 @@
 ## Screenshot
 
-![MyWeather App Screenshot](./assets/Cityweather-search1.jpg)
+![MyWeather App Screenshot](./assets/search-ottawa-weather.jpg)
 
 ## MyWeather App
 
