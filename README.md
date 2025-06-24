@@ -112,6 +112,17 @@ This will help keep your sensitive information secure.
 
 These updates to the README.md file will provide clear instructions on how to set up and run the application, as well as how to manage environment variables and logging.
 
-Managing secret: 
+Managing secret:
 
-SOPS_AGE_KEY_FILE=./manifests/age.agekey sops --decrypt manifests/backend-se^Cet.yaml | kubectl apply -f -
+kubectl apply -f manifests/staging/namespace.yaml 
+
+SOPS_AGE_KEY_FILE=./manifests/age.agekey sops --decrypt manifests/staging/backend-secret.yaml | kubectl apply -f -
+
+SOPS_AGE_KEY_FILE=./manifests/age.agekey sops --decrypt manifests/staging/cloud-secret.yaml | kubectl apply -f -
+
+kubectl apply -f manifests/base/*.yaml
+
+To check the logs: 
+kubectl logs -l app=cloudflare-myweather -n myweather tail=50
+
+
