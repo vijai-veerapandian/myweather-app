@@ -1,4 +1,4 @@
-## Screenshot
+## Application Landing page
 
 ![MyWeather App Screenshot](./assets/screenshot2.png)
 
