@@ -1,4 +1,4 @@
-## Screenshot
+## Myweather Frontpage
 
 ![MyWeather App Screenshot](./assets/search-ottawa-weather.jpg)
 
@@ -6,11 +6,11 @@
 
 MyWeather App is a containerized application that uses React frontend and Backend made of API calls to fetch realtime Weather data and also Google Gemini AI integrated weather summarizer and monitoring system using prometheus-grafana-loki stack. This README provides instructions on how to set up and run the application using Docker Compose.
 
-## Architecture
+## Highlevel Architecture
 
 ![MyWeather App Screenshot](./assets/microservice-docker-compose.jpg)
 
-## Overall Architecture
+## Detailed Architecture
 ![MyWeather App Screenshot](./assets/Updated-microservice-architecturewith-Infra-automation.jpg)
 
 ## Prerequisites
