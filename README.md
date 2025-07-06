@@ -1,4 +1,4 @@
-## Myweather Frontpage
+## Frontpage
 
 ![MyWeather App Screenshot](./assets/search-ottawa-weather.jpg)
 
